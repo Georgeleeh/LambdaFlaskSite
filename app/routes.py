@@ -1,6 +1,6 @@
 from app import app, db
 
-from flask import Flask
+from flask import render_template
 
 from botocore.exceptions import ClientError
 
@@ -17,7 +17,9 @@ def get_blog_post(timestamp, dynamodb=db):
 
 
 @app.route('/')
+@app.route('/index')
 def hello_world():
     response = get_blog_post(1234)
     print(response)
-    return '<h1>Yeah, that is Zappa! Zappa! Zap! Zap!</h1>'
+    user = {'username': 'Miguel'}
+    return render_template('index.html', title='Home', user=user)
