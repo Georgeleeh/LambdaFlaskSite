@@ -1,8 +1,9 @@
 <html>
     <head>
-        <title>{{ title }} - Microblog</title>
+        <title>{{ title }}</title>
     </head>
     <body>
         <h1>Hello, {{ user.username }}!</h1>
+        <img src= {{ url_for('static', filename='images/uni.jpg') }}>
     </body>
 </html>
