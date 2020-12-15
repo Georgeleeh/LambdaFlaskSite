@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/moar.css') }}" />
+{% endblock %}
+
+{% block body_class %}bg-york-central-hall{% endblock %}
+
+{% block title %}Home{% endblock %}
+
+{% block content_title %}Home{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid" style="width: 1000px; padding-top: 2em;">
+    <div class="text-center bg-dark text-white rounded" style="padding: 1em;">
+        <h1>I’m George Harris and I’m a student of Electronic Engineering with Music Technology Systems</h1>
+        <br>
+        <br>
+        <p>
+            This site was built to present various projects I’ve worked on previously and document the creation of
+            upcoming projects.
+            You can check out some of my latest featured work below, go to the <i>Portfolio</i> page to see my
+            favourite completed projects, or the <i>Blog page</i> to see what I'm working on right now!
+        </p>
+        <br>
+        <p>
+            The site as you see it now was built from scratch with Flask, a framework written for Python.
+            I'm terrible with visual design and very new to HTML so it might not be pretty but it's completely
+            handmade by me.
+            I'm even self-hosting the site on a Raspberry Pi!
+        </p>
+    </div>
+</div>
+
+{% if featured %}
+<div class="container" style="width: 1000px; padding-top: 3em;">
+    <div class="card bg-dark text-white text-center">
+        <h3>Featured Posts</h3>
+    </div>
+
+    <div class="card-deck">
+        {% for i in range(len) %}
+        <div style="padding-top: 1em;">
+            <div class="card border-0 text-white text-center bg-dark" style="max-width: 300px;">
+                <a href="{{ url_for('detail', slug=featured[i].slug) }}">
+                    <img class="card-img-top img" style="max-height: 150px;" src="{{ featured[i].feature_image }}"
+                        alt="{{ featured[i].feature_image }}">
+                </a>
+
+                <div class="card-body">
+                    <h4>
+                        <a class="text-white" href="{{ url_for('detail', slug=featured[i].slug) }}">
+                            {{ featured[i].title }}
+                        </a>
+                    </h4>
+
+                    <p>
+                        {{ featured[i].one_liner }}
+                    </p>
+
+
+
+                    <p>
+                        {% for tag in featured[i].tags %}
+                        <a class="text-white" href="{{ url_for('tags', tag=tag.name ) }}">{{ tag.name }}</a>
+                        {% if not loop.last %}
+                        ,
+                        {% endif %}
+                        {% endfor %}
+                    </p>
+
+                    <p class="card-text"><small class="text-muted">Created
+                            {{ featured[i].timestamp.strftime('%d/%m/%Y at %H:%M') }}</small></p>
+
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% else %}
+<p>No entries have been created yet.</p>
+{% endif %}
+
+</div>
+{% endblock %}

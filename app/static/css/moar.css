@@ -1,0 +1,20 @@
+.bg-york-central-hall {
+    background-image: url('background_images/york-central-hall.jpg');
+    background-color: #cccccc;
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+  }
+
+.bg-york-indie-gig {
+    background-image: url('background_images/york-indie-gig.jpg');
+    background-color: #cccccc;
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+  }
+
+.bg-typists {
+    background-image: url('background_images/typists.jpg');
+    background-color: #cccccc;
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+  }
