@@ -64,8 +64,6 @@ def logout():
 def blog():
     # TODO implement search
     # TODO check if posts are sorted?
-    posts = []
-
     r = db_posts.scan(FilterExpression='published = :b', ExpressionAttributeValues = {":b":True } )
     posts = r['Items']
 
@@ -124,7 +122,7 @@ def _create_or_edit(post, template):
         elif button_value == 'delete':
             # TODO delete post, remove post from associated entries for tags and check for loner tags
             flash('Post deleted.', 'danger')
-            return redirect(url_for('index'))
+            return redirect(url_for('home'))
 
     return render_template(template, post=post, images=os.listdir(app.config['IMAGE_UPLOAD_FOLDER']))
 
@@ -154,15 +152,20 @@ def edit(slug):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-def get_tag_posts(tag):
-    tag = tag.title()
+def get_tag_posts(tag_name):
+    tag_name = tag_name.title()
 
     try:
-        response = db_tags.get_item(Key={'tag': tag})
+        response = db_tags.get_item(Key={'tag': tag_name})
     except ClientError as e:
         print(e.response['Error']['Message'])
     else:
-        tag = response['Item']
+        try:
+            tag = response['Item']
+        except KeyError:
+            flash(f'No posts found tagged with {tag_name}', 'danger')
+            return redirect(url_for('home'))
+
     
     return tag['posts']
 
@@ -173,14 +176,15 @@ def tags(tag):
         
     return render_template('blog.html', post_list=posts)
 
-
-
-
 @app.route('/drafts/')
 @login_required
 def drafts():
-    # TODO
-    return render_template('home.html')
+    r = db_posts.scan(FilterExpression='published = :b', ExpressionAttributeValues = {":b":False } )
+    posts = r['Items']
+
+    return render_template('blog.html', post_list=posts)
+
+
 
 @app.route('/image-gallery/')
 @login_required
