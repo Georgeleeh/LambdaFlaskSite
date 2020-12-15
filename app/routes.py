@@ -37,12 +37,10 @@ def put_blog_post(timestamp, title, content, tags):
     else:
         raise Exception(f'Failed to create post: {response}')
 
-    return response
-
 
 
 @app.route('/')
 def home():
-    response = put_blog_post(4321, 'Second Post', "He's back, putting posts again", 'test, put')
-    print(response)
+    #put_blog_post(4321, 'Second Post', "He's back, putting posts again", 'test, put')
+
     return render_template('home.html')
