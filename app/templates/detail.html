@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/moar.css') }}" />
+{% endblock %}
+
+{% block body_class %}bg-typists{% endblock %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content_title %}{{ post.title }}{% endblock %}
+
+{% block extra_navbar_link %}
+{% if session.logged_in %}
+<li class="nav-item">
+  <a class="nav-link" href="{{ url_for('edit', slug=post.slug) }}">Edit post</a>
+</li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div style="padding-top: 1em;">
+  <div class="card border-0 text-white bg-dark mx-auto" style="padding: 0.5em; max-width: 800px;">
+<img class="card-img" src="{{ post.feature_image }}" alt="{{ post.feature_image }}">
+</div>
+</div>
+
+<div style="padding-top: 1em;">
+  <div class="card border-0 text-white bg-dark" style="padding: 0.5em;">
+    <p class="col card-text">{{ post.one_liner }}</p>
+    <p>
+      {% for tag in post.tags %}
+      <a class="text-white" href='#'>{{ tag }}</a>
+      {% if not loop.last %}
+      ,
+      {% endif %}
+      {% endfor %}
+    </p>
+    <p class="text-muted">Created {{ post.timestamp | stampdate }}</p>
+  </div>
+</div>
+<div style="padding-top: 1em;">
+  <div class="card border-0 text-white bg-dark" style="padding: 0.5em;">
+    {{ post.content }}
+  </div>
+</div>
+{% endblock %}

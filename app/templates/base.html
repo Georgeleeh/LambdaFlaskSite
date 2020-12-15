@@ -32,9 +32,26 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('blog') }}">Blog</a>
         </li>
-        
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('tags', tag='portfolio') }}">Portfolio</a>
+        </li>
         {% if session.logged_in %}
-        
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('drafts') }}">Drafts</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('create') }}">Create Entry</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Images
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('image_gallery') }}">Image Gallery</a>
+            <a class="dropdown-item" href="{{ url_for('upload_image') }}">Upload Image</a>
+          </div>
+        </li>
         {% endif %}
 
         {% block extra_navbar_link %}{% endblock %}

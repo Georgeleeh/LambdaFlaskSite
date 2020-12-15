@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Image Gallery{% endblock %}
+
+{% block content_title %}{% if search %}Search "{{ search }}"{% else %}Image Gallery{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row">
+    {% for image in images %}
+    <div class="col-md-3">
+        <img class="figure-img img-fluid rounded img-thumbnail" src="/static/images/uploads/{{ image }}" alt="{{ image }}">
+        <figcaption class="figure-caption">{{ image }}</figcaption>
+    </div>
+
+        
+        {% if loop.index % 4 == 0 %}
+        <!-- if last column in row -->
+        </div><div class="row">
+        {% endif %}
+
+    {% endfor %}
+</div>
+{% endblock %}

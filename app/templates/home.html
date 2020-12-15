@@ -28,7 +28,7 @@
             The site as you see it now was built from scratch with Flask, a framework written for Python.
             I'm terrible with visual design and very new to HTML so it might not be pretty but it's completely
             handmade by me.
-            Initially, I was self-hosting on a Raspberry Pi but the site is now in the cloud with AWS Lambda!
+            This site used to be self-hosted on a Raspberry Pi 4 but I've since transplanted it to AWS Lambda!
         </p>
     </div>
 </div>
@@ -43,14 +43,14 @@
         {% for i in range(len) %}
         <div style="padding-top: 1em;">
             <div class="card border-0 text-white text-center bg-dark" style="max-width: 300px;">
-                <a href="">
+                <a href="{{ url_for('detail', slug=featured[i].slug) }}">
                     <img class="card-img-top img" style="max-height: 150px;" src="{{ featured[i].feature_image }}"
                         alt="{{ featured[i].feature_image }}">
                 </a>
 
                 <div class="card-body">
                     <h4>
-                        <a class="text-white" href="">
+                        <a class="text-white" href="{{ url_for('detail', slug=featured[i].slug) }}">
                             {{ featured[i].title }}
                         </a>
                     </h4>
@@ -63,7 +63,7 @@
 
                     <p>
                         {% for tag in featured[i].tags %}
-                        <a class="text-white" href="">{{ tag }}</a>
+                        <a class="text-white" href="{{ url_for('tags', tag=tag ) }}">{{ tag }}</a>
                         {% if not loop.last %}
                         ,
                         {% endif %}
