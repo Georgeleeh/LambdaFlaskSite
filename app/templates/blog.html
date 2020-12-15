@@ -22,24 +22,24 @@
     <div class="row align-items-center">
         <div class="col-sm-3">
             <a
-                href="{% if entry.published %}{{ url_for('detail', slug=entry.slug) }}{% else %}{{ url_for('edit', slug=entry.slug) }}{% endif %}">
+                href="">
                 <img class="card-img" src="{{ entry.featured_image }}" alt="{{ entry.feature_image }}">
             </a>
         </div>
         <div class="col-sm-6">
             <h3>
                 <a
-                    href="{% if entry.published %}{{ url_for('detail', slug=entry.slug) }}{% else %}{{ url_for('edit', slug=entry.slug) }}{% endif %}">
+                    href="">
                     {{ entry.title }}
                 </a>
             </h3>
             <p class="card-text">{{ entry.one_liner }}</p>
-            <p class="text-muted">Created {{ entry.timestamp.strftime('%d/%m/%Y at %H:%M') }}</p>
+            <p class="text-muted">Created {{ entry.timestamp | stampdate }}</p>
         </div>
         <div class="col-sm-3">
             <p>
                 {% for tag in entry.tags %}
-                <a href="{{ url_for('tags', tag=tag.name ) }}">{{ tag.name }}</a>
+                <a href="">{{ tag }}</a>
                 {% if not loop.last %}
                 ,
                 {% endif %}

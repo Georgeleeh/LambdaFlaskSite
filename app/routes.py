@@ -49,9 +49,14 @@ def blog():
     # if logged in, show all posts
     # else, only show published posts
 
-    r = db_posts.scan(FilterExpression='published = :b', ExpressionAttributeValues = {":b":True } )
+    posts = []
 
-    posts = r['Items']
+    if session.get('logged_in'):
+        r = db_posts.scan(FilterExpression='published = :b', ExpressionAttributeValues = {":b":True } )
+        posts = r['Items']
+    else:
+        r = db_posts.scan()
+        posts = r['Items']
 
     return render_template('blog.html', entry_list=posts)
 
@@ -81,9 +86,6 @@ def logout():
 @app.route('/')
 def home():
     r = db_posts.scan(FilterExpression='published = :b AND featured = :b', ExpressionAttributeValues = {":b":True } )
-
     posts = r['Items']
-
-    print(posts)
 
     return render_template('home.html', featured=posts, len=len(posts))
