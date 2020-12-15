@@ -63,14 +63,11 @@ def logout():
 @app.route('/blog/')
 def blog():
     # TODO implement search
+    # TODO check if posts are sorted?
     posts = []
 
-    if session.get('logged_in'):
-        r = db_posts.scan(FilterExpression='published = :b', ExpressionAttributeValues = {":b":True } )
-        posts = r['Items']
-    else:
-        r = db_posts.scan()
-        posts = r['Items']
+    r = db_posts.scan(FilterExpression='published = :b', ExpressionAttributeValues = {":b":True } )
+    posts = r['Items']
 
     return render_template('blog.html', post_list=posts)
 
