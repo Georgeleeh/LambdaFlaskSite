@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/moar.css') }}" />
+{% endblock %}
+
+{% block body_class %}bg-york-indie-gig{% endblock %}
+
+{% block extra_navbar_content %}
+<form class="form-inline">
+    <input class="form-control mr-sm-2" name="q" type="search" placeholder="Search" aria-label="Search">
+</form>
+{% endblock %}
+
+{% block title %}Blog entries{% endblock %}
+
+{% block content_title %}{% if search %}Search "{{ search }}"{% else %}Blog entries{% endif %}{% endblock %}
+
+{% block content %}
+{% for entry in entry_list %}
+<div class="card mx-auto" style="width: 1100px;">
+    <div class="row align-items-center">
+        <div class="col-sm-3">
+            <a
+                href="{% if entry.published %}{{ url_for('detail', slug=entry.slug) }}{% else %}{{ url_for('edit', slug=entry.slug) }}{% endif %}">
+                <img class="card-img" src="{{ entry.featured_image }}" alt="{{ entry.feature_image }}">
+            </a>
+        </div>
+        <div class="col-sm-6">
+            <h3>
+                <a
+                    href="{% if entry.published %}{{ url_for('detail', slug=entry.slug) }}{% else %}{{ url_for('edit', slug=entry.slug) }}{% endif %}">
+                    {{ entry.title }}
+                </a>
+            </h3>
+            <p class="card-text">{{ entry.one_liner }}</p>
+            <p class="text-muted">Created {{ entry.timestamp.strftime('%d/%m/%Y at %H:%M') }}</p>
+        </div>
+        <div class="col-sm-3">
+            <p>
+                {% for tag in entry.tags %}
+                <a href="{{ url_for('tags', tag=tag.name ) }}">{{ tag.name }}</a>
+                {% if not loop.last %}
+                ,
+                {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<p>No entries have been created yet.</p>
+{% endfor %}
+
+{% endblock %}

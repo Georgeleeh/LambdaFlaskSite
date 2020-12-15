@@ -1,5 +1,6 @@
 from app import app, db_posts, db_tags
-
+import boto3
+from datetime import datetime
 from flask import render_template, url_for, request, session, flash, redirect
 
 from botocore.exceptions import ClientError
@@ -37,6 +38,23 @@ def put_blog_post(timestamp, title, content, tags):
     else:
         raise Exception(f'Failed to create post: {response}')
 
+@app.template_filter('stampdate')
+def stampdate(timestamp):
+    return datetime.fromtimestamp(timestamp).strftime('%d/%m/%Y at %H:%M')
+
+@app.route('/blog/')
+def blog():
+    # get all blog posts
+    # check if user is logged in
+    # if logged in, show all posts
+    # else, only show published posts
+
+    r = db_posts.scan(FilterExpression='published = :b', ExpressionAttributeValues = {":b":True } )
+
+    posts = r['Items']
+
+    return render_template('blog.html', entry_list=posts)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     next_url = request.args.get('next') or request.form.get('next')
@@ -62,6 +80,10 @@ def logout():
 
 @app.route('/')
 def home():
-    #put_blog_post(4321, 'Second Post', "He's back, putting posts again", 'test, put')
+    r = db_posts.scan(FilterExpression='published = :b AND featured = :b', ExpressionAttributeValues = {":b":True } )
 
-    return render_template('home.html')
+    posts = r['Items']
+
+    print(posts)
+
+    return render_template('home.html', featured=posts, len=len(posts))

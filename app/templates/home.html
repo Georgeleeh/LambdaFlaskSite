@@ -43,14 +43,14 @@
         {% for i in range(len) %}
         <div style="padding-top: 1em;">
             <div class="card border-0 text-white text-center bg-dark" style="max-width: 300px;">
-                <a href="{{ url_for('detail', slug=featured[i].slug) }}">
+                <a href="">
                     <img class="card-img-top img" style="max-height: 150px;" src="{{ featured[i].feature_image }}"
                         alt="{{ featured[i].feature_image }}">
                 </a>
 
                 <div class="card-body">
                     <h4>
-                        <a class="text-white" href="{{ url_for('detail', slug=featured[i].slug) }}">
+                        <a class="text-white" href="">
                             {{ featured[i].title }}
                         </a>
                     </h4>
@@ -63,7 +63,7 @@
 
                     <p>
                         {% for tag in featured[i].tags %}
-                        <a class="text-white" href="{{ url_for('tags', tag=tag.name ) }}">{{ tag.name }}</a>
+                        <a class="text-white" href="">{{ tag }}</a>
                         {% if not loop.last %}
                         ,
                         {% endif %}
@@ -71,7 +71,7 @@
                     </p>
 
                     <p class="card-text"><small class="text-muted">Created
-                            {{ featured[i].timestamp.strftime('%d/%m/%Y at %H:%M') }}</small></p>
+                            {{ featured[i].timestamp | stampdate }}</small></p>
 
                 </div>
 
