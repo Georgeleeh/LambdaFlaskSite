@@ -4,7 +4,7 @@ import os, re
 import functools
 from datetime import datetime
 from flask import render_template, url_for, request, session, flash, redirect
-
+from werkzeug.utils import secure_filename
 from botocore.exceptions import ClientError
 
 def login_required(fn):
@@ -124,25 +124,27 @@ def _create_or_edit(post, template):
             flash('Post deleted.', 'danger')
             return redirect(url_for('home'))
 
-    return render_template(template, post=post, images=s3.ls(app.config['IMAGE_UPLOAD_FOLDER']))
+    return render_template(template, post=post, images=get_upload_images())
 
 @app.route('/create/', methods=['GET', 'POST'])
 @login_required
 def create():
     return _create_or_edit({}, 'create.html')
 
-@app.route('/<slug>/')
+@app.route('/blog/<slug>/')
 def detail(slug):
     r = db_posts.scan(FilterExpression='published = :b AND slug = :s', ExpressionAttributeValues = {":b":True, ":s" : slug} )
-    post = r['Items'][0]
 
-    if post:
-        # TODO add HTML content as well as content
+    if len(r) > 0:
+        post = r['Items'][0]
+
         return render_template('detail.html', post=post)
     else:
-        return render_template('detail.html')
+        flash('Post not found.', 'danger')
+        return redirect(url_for('home'))
 
-@app.route('/<slug>/edit/', methods=['GET', 'POST'])
+
+@app.route('/blog/<slug>/edit/', methods=['GET', 'POST'])
 @login_required
 def edit(slug):
     r = db_posts.scan(FilterExpression='slug = :s', ExpressionAttributeValues = {":s" : slug} )
@@ -183,19 +185,46 @@ def drafts():
 
     return render_template('blog.html', post_list=posts)
 
-
-
 @app.route('/image-gallery/')
 @login_required
 def image_gallery():
     # TODO
-    images = s3.ls(app.config['IMAGE_UPLOAD_FOLDER'])
-    images = [f'https://georgeleeh-blog.s3.eu-west-2.amazonaws.com{image[15:]}' for image in images]
+    images = get_upload_images()
     return render_template('image_gallery.html', images=images)
+
 
 @app.route('/upload-image/', methods=['GET', 'POST'])
 @login_required
 def upload_image():
-    # TODO
-    images = s3.ls(app.config['IMAGE_UPLOAD_FOLDER'])
-    return render_template('image_gallery.html', images=images)
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part.', 'danger')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file,', 'danger')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            # check if file exists
+            if file.filename in [filepath.split('/')[-1] for filepath in get_upload_images()]:
+                flash('Filename exists,', 'danger')
+                return redirect(request.url)
+            else:
+                filename = secure_filename(file.filename)
+
+                filepath = os.path.join('/tmp', filename)
+                file.save(filepath)
+                s3.put_object(ACL='public-read', Body=open(filepath, 'rb') , Bucket='georgeleeh-blog', Key='static/images/uploads/'+filename )
+
+                flash('Image uploaded successfully.', 'success')
+                return redirect(url_for('home'))
+    return render_template('upload_image.html')
+
+def get_upload_images():
+    r = s3.list_objects(Bucket='georgeleeh-blog', Prefix='static/images/uploads')['Contents']
+
+    prefix = 'https://georgeleeh-blog.s3.eu-west-2.amazonaws.com/'
+    return [prefix + c['Key'] for c in r]
