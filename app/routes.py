@@ -190,6 +190,7 @@ def drafts():
 def image_gallery():
     # TODO
     images = s3.ls(app.config['IMAGE_UPLOAD_FOLDER'])
+    images = [f'https://georgeleeh-blog.s3.eu-west-2.amazonaws.com{image[15:]}' for image in images]
     return render_template('image_gallery.html', images=images)
 
 @app.route('/upload-image/', methods=['GET', 'POST'])

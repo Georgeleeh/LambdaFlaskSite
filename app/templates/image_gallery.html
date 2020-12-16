@@ -8,8 +8,8 @@
 <div class="row">
     {% for image in images %}
     <div class="col-md-3">
-        <img class="figure-img img-fluid rounded img-thumbnail" src="/static/images/uploads/{{ image }}" alt="{{ image }}">
-        <figcaption class="figure-caption">{{ image }}</figcaption>
+        <img class="figure-img img-fluid rounded img-thumbnail" src="{{ image }}" alt="{{ image }}">
+        <figcaption class="figure-caption">{{ image.split('/')[-1] }}</figcaption>
     </div>
 
         
