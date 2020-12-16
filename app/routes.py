@@ -1,11 +1,18 @@
-from app import app, db_posts, db_tags, s3
+
 import boto3
 import os, re
 import functools
 from datetime import datetime
-from flask import render_template, url_for, request, session, flash, redirect
+from flask import render_template, url_for, request, session, flash, redirect, Markup
 from werkzeug.utils import secure_filename
 from botocore.exceptions import ClientError
+
+from micawber import parse_html
+from markdown import markdown
+from markdown.extensions.codehilite import CodeHiliteExtension
+from markdown.extensions.extra import ExtraExtension
+
+from app import app, db_posts, db_tags, s3, oembed_providers
 
 def login_required(fn):
     @functools.wraps(fn)
@@ -137,6 +144,17 @@ def detail(slug):
 
     if len(r) > 0:
         post = r['Items'][0]
+
+        # convert post content to HTML
+        hilite = CodeHiliteExtension(linenums=False, css_class='highlight')
+        extras = ExtraExtension()
+        post['content'] = markdown(post['content'], extensions=[hilite, extras])
+        post['content'] = parse_html(
+            post['content'],
+            oembed_providers,
+            urlize_all=True,
+            maxwidth=app.config['SITE_WIDTH'])
+        post['content'] = Markup(post['content'])
 
         return render_template('detail.html', post=post)
     else:

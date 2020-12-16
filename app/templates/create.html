@@ -25,7 +25,7 @@
     <label for="Featured Image" class="col-sm-2 control-label">Image</label>
     <div class="col-sm-10">
       <select class="form-control" id="featured_image" name="featured_image" type="text" value="{{ post.title }}">
-        <option value=''>None</option>
+        <option value="{{ post.featured_image }}">{{ post.featured_image }}</option>
         {% for image in images %}
         <option {% if post.featured_image %}{% if post.featured_image.split("/")[-1] == image %} selected {% endif %}{% endif %} value="{{ image }}">{{ image }}</option>
         {% endfor %}
