@@ -7,7 +7,7 @@ class Config(object):
     # General
     ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    IMAGE_UPLOAD_FOLDER = 'app/static/images/uploads/'
+    IMAGE_UPLOAD_FOLDER = 's3://georgeleeh-blog/static/images/uploads'
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'jfif', 'gif'}
     # Flask S3 Stuff
     FLASKS3_BUCKET_NAME = os.environ.get('FLASKS3_BUCKET_NAME')

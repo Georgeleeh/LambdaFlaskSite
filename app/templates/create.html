@@ -27,7 +27,7 @@
       <select class="form-control" id="featured_image" name="featured_image" type="text" value="{{ post.title }}">
         <option value=''>None</option>
         {% for image in images %}
-        <option {% if post.featured_image %}{% if post.featured_image.split("/")[-1] == image %} selected {% endif %}{% endif %} value="/static/images/uploads/{{ image }}">{{ image }}</option>
+        <option {% if post.featured_image %}{% if post.featured_image.split("/")[-1] == image %} selected {% endif %}{% endif %} value="https://georgeleeh-blog.s3.eu-west-2.amazonaws.com{{ image[15:] }}">{{ image }}</option>
         {% endfor %}
       </select>
     </div>

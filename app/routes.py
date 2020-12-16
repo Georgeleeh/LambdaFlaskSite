@@ -1,4 +1,4 @@
-from app import app, db_posts, db_tags
+from app import app, db_posts, db_tags, s3
 import boto3
 import os, re
 import functools
@@ -124,7 +124,7 @@ def _create_or_edit(post, template):
             flash('Post deleted.', 'danger')
             return redirect(url_for('home'))
 
-    return render_template(template, post=post, images=os.listdir(app.config['IMAGE_UPLOAD_FOLDER']))
+    return render_template(template, post=post, images=s3.ls(app.config['IMAGE_UPLOAD_FOLDER']))
 
 @app.route('/create/', methods=['GET', 'POST'])
 @login_required
@@ -165,14 +165,13 @@ def get_tag_posts(tag_name):
         except KeyError:
             flash(f'No posts found tagged with {tag_name}', 'danger')
             return redirect(url_for('home'))
-
     
     return tag['posts']
 
 @app.route('/blog/tags/<tag>')
 def tags(tag):
     timestamps = get_tag_posts(tag)
-    posts = [get_blog_post(t) for t in timestamps]
+    posts = [get_blog_post(t) for t in timestamps if get_blog_post(t)['published'] is True]
         
     return render_template('blog.html', post_list=posts)
 
@@ -190,12 +189,12 @@ def drafts():
 @login_required
 def image_gallery():
     # TODO
-    images = os.listdir(app.config['IMAGE_UPLOAD_FOLDER'])
+    images = s3.ls(app.config['IMAGE_UPLOAD_FOLDER'])
     return render_template('image_gallery.html', images=images)
 
 @app.route('/upload-image/', methods=['GET', 'POST'])
 @login_required
 def upload_image():
     # TODO
-    images = os.listdir(app.config['IMAGE_UPLOAD_FOLDER'])
+    images = s3.ls(app.config['IMAGE_UPLOAD_FOLDER'])
     return render_template('image_gallery.html', images=images)
